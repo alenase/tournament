@@ -5,13 +5,15 @@ import com.mesports.testproject.entities.Tournament;
 import lombok.Data;
 
 import java.util.Calendar;
+import java.util.List;
 
 @Data
 public class MatchDto {
     private int id;
-    private Participant participant1;
-    private Participant participant2;
+    private List<ParticipantDto> participants;
     private Calendar startTime;
     private Calendar finishTime;
     private Tournament tournament;
+    private int participant1Score;
+    private int participant2Score;
 }

@@ -28,7 +28,7 @@ public class TestProjectApplication {
     public static void main(String[] args) {
         SpringApplication.run(TestProjectApplication.class, args);
 
-        Tournament tournament1 = new Tournament();
+       /* Tournament tournament1 = new Tournament();
         tournament1.setMaxParticipants(8);
         tournament1.setName("Tourm4");
 
@@ -47,16 +47,13 @@ public class TestProjectApplication {
 
         tournament1.setMatches(match);
 
-
-
         System.out.println(tournament1);
         System.out.println("match: " +match);
         System.out.println(p1);
 
         Tournament tournament4 = tounamentService.saveTournament(tournament1);
-
         System.out.println("HERE" + tournament4);
-
+*/
 
     }
 

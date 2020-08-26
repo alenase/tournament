@@ -17,7 +17,7 @@ public class Participant {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private long id;
+    private int id;
 
     @Column(nullable = false, name="participant_name")
     private String participantName;
