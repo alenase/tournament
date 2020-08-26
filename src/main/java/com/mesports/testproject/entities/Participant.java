@@ -33,7 +33,7 @@ public class Participant {
 
     public Participant() {
         tournaments = new ArrayList<>();
-
+        match = new ArrayList<>();
     }
 
     public void setTournaments(Tournament tournament) {
@@ -43,6 +43,15 @@ public class Participant {
             }
         }
         tournaments.add(tournament);
+    }
+
+    public void setMatch(Match match1) {
+        for (Match m : match) {
+            if (m.equals(match1)) {
+                throw new TournamentException(ErrorMessages.PARTICIPANT_ALREADY_ADDED_TO_MATCH);
+            }
+        }
+        match.add(match1);
     }
 
     @Override

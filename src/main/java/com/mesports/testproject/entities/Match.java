@@ -1,10 +1,13 @@
 package com.mesports.testproject.entities;
 
+import com.mesports.testproject.exceptions.ErrorMessages;
+import com.mesports.testproject.exceptions.TournamentException;
 import lombok.Data;
 
 import javax.persistence.*;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -38,20 +41,38 @@ public class Match {
     @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
+    public Match(){
+        participants = new ArrayList<>();
+    }
 
 
+    public void setParticipants(Participant participant) {
+        for (Participant p : participants) {
+            if (p.equals(participant)) {
+                throw new TournamentException(ErrorMessages.NOT_ALLOWED_QUANTITY);
+            }
+        }
+        if (participants.size() < 2) {
+            participants.add(participant);
+        } else
+            throw new TournamentException(ErrorMessages.NOT_ALLOWED_QUANTITY_OF_PARTICIPANTS);
+    }
 
     @Override
     public String toString() {
         Date dateStart = null;
-        if (!startTime.equals(null))  {dateStart = startTime; }
+        if (!startTime.equals(null)) {
+            dateStart = startTime;
+        }
 
         Date dateFinish = null;
-        if (!finishTime.equals(null))  {dateFinish = finishTime; }
+        if (!finishTime.equals(null)) {
+            dateFinish = finishTime;
+        }
         return "Match(id=" + id + ", startTime=" + dateStart + ", finishTime=" +
                 dateFinish + ", participant1Score=" + participant1Score
                 + ", participant2Score=" + participant2Score +
-                ", Tournament: " + tournament.getName() + ", id=" +tournament.getId();
+                ", Tournament: " + tournament.getName() + ", id=" + tournament.getId();
     }
 
 

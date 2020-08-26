@@ -33,7 +33,7 @@ public class TestProjectApplication {
         tournament1.setName("Tourm4");
 
         Participant p1 = new Participant();
-        p1.setParticipantName("Participant-"+123);//(new Random(100)));
+        p1.setParticipantName("Participant-"+1234);
         p1.setTournaments(tournament1);
         tournament1.setParticipants(p1);
 
@@ -41,6 +41,10 @@ public class TestProjectApplication {
         match.setStartTime(new Date(456));
         match.setFinishTime(new Date(4567));
         match.setTournament(tournament1);
+
+        match.setParticipants(p1);
+        p1.setMatch(match);
+
         tournament1.setMatches(match);
 
 
