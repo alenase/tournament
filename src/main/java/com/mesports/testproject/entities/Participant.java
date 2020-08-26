@@ -19,12 +19,14 @@ public class Participant {
     @GeneratedValue(strategy = IDENTITY)
     private long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(nullable = false, name="participant_name")
+    private String participantName;
 
-    /*@OneToMany(mappedBy = "id", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable(name = "participants_in_matches",
+            joinColumns = @JoinColumn(name = "match_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "participants_id", referencedColumnName = "id"))
     private List<Match> match;
-     */
 
     @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY)
     private List<Tournament> tournaments;
@@ -45,6 +47,6 @@ public class Participant {
 
     @Override
     public String toString() {
-        return "Participant(id=" + id + ", name=" + name + ", tournaments=[" + tournaments.size() + "]) ";
+        return "Participant(id=" + id + ", name=" + participantName + ", tournaments=[" + tournaments.size() + "]) ";
     }
 }

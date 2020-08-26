@@ -10,50 +10,50 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.*;
 
 @SpringBootApplication
 public class TestProjectApplication {
 
-	@Autowired
-	public static TournamentServiceImpl tounamentService;
+    public static TournamentServiceImpl tounamentService;
 
-	public static void main(String[] args) {
-		SpringApplication.run(TestProjectApplication.class, args);
+    @Autowired
+    public TestProjectApplication(TournamentServiceImpl tounamentService) {
+        this.tounamentService = tounamentService;
+    }
 
-		Tournament tournament1 = new Tournament();
-		tournament1.setMaxParticipants(8);
-		System.out.println(tournament1);
+    public static void main(String[] args) {
+        SpringApplication.run(TestProjectApplication.class, args);
 
-		Participant p1 = new Participant();
-		p1.setName("Participant-1");
-		p1.setTournaments(tournament1);
-		System.out.println(p1);
+        Tournament tournament1 = new Tournament();
+        tournament1.setMaxParticipants(8);
+        tournament1.setName("Tourm4");
 
-		Participant p2 = new Participant();
-		p2.setName("Participant-2");
-		p2.setTournaments(tournament1);
-		System.out.println(p2);
+        Participant p1 = new Participant();
+        p1.setParticipantName("Participant-"+123);//(new Random(100)));
+        p1.setTournaments(tournament1);
+        tournament1.setParticipants(p1);
 
-		Participant p3 = new Participant();
-		p3.setName("Participant-3");
-		p3.setTournaments(tournament1);
-		System.out.println(p3);
+        Match match = new Match();
+        match.setStartTime(new Date(456));
+        match.setFinishTime(new Date(4567));
+        match.setTournament(tournament1);
+        tournament1.setMatches(match);
 
-		Participant p4 = new Participant();
-		p4.setName("Participant-4");
-		p4.setTournaments(tournament1);
-		System.out.println(p4);
 
-		tournament1.setParticipants(p1);
-		tournament1.setParticipants(p2);
-		tournament1.setParticipants(p3);
-		tournament1.setParticipants(p4);
-		System.out.println(tournament1);
 
-		tounamentService.saveTournament(tournament1);
+        System.out.println(tournament1);
+        System.out.println("match: " +match);
+        System.out.println(p1);
 
-	}
+        Tournament tournament4 = tounamentService.saveTournament(tournament1);
+
+        System.out.println("HERE" + tournament4);
+
+
+    }
 
 }

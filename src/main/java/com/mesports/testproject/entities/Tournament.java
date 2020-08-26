@@ -13,7 +13,7 @@ import java.util.Set;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "tournament")
+@Table(name = "tournament", schema = "targetSchemaName")
 @Data
 public class Tournament {
 
@@ -30,11 +30,11 @@ public class Tournament {
     @Column(name = "match_quantity", nullable = false)
     private int matchQuantity;
 
-    @OneToMany(mappedBy = "tournament", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tournament" , cascade = CascadeType.ALL)//, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Match> matches;
 
     @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @JoinTable(name = "tournament_participants",
+    @JoinTable(name = "participants_in_tournaments",
             joinColumns = @JoinColumn(name = "tournament_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "participants_id", referencedColumnName = "id"))
     private List<Participant> participants;
@@ -44,6 +44,7 @@ public class Tournament {
         participants = new ArrayList<>();
     }
 
+    private void setMatchQuantity(){}
 
     public void setMaxParticipants(int maxParticipants) {
         if (maxParticipants % 8 != 0) {
@@ -69,11 +70,20 @@ public class Tournament {
         participants.add(participant);
     }
 
+    public void setMatches(Match match) {
+        for (Match m : matches) {
+            if (m.equals(matches)) {
+                throw new TournamentException(ErrorMessages.MATCH_IS_PRESENT);
+            }
+        }
+        matches.add(match);
+    }
+
     @Override
     public String toString() {
-        return "Tournament(id=" + id + ", name=n" + name + ", maxParticipants=" + maxParticipants
+        return "Tournament(id=" + id + ", name=" + name + ", maxParticipants=" + maxParticipants
                 + ", matchQuantity=" + matchQuantity + ", matches=[" + matches.size()
-                + "], participants=["+ participants.size() +"])";
+                + "], participants=[" + participants.size() + "])";
 
     }
 

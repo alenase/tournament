@@ -21,18 +21,16 @@ public class TournamentServiceImpl implements TournamentService {
         this.tournamentRepository = tournamentRepository;
     }
 
-    public TournamentDto getTournamentById(int id){
+    public Tournament getTournamentById(int id){
         Tournament tournament = getTournamentEntityById(id);
-        return modelMapper.map(tournament, TournamentDto.class);
+        return tournament; //modelMapper.map(tournament, TournamentDto.class);
     }
 
-    public void saveTournament(Tournament tournament){
-         /*Tournament savedTournament = tournamentRepository.save(tournament);
-        return modelMapper.map(savedTournament, TournamentDto.class);
-
-          */
-        tournamentRepository.save(tournament);
+    public Tournament saveTournament(Tournament tournament){
+         Tournament savedTournament = tournamentRepository.save(tournament);
+        return savedTournament;
     }
+
 
     private Tournament getTournamentEntityById(long id) {
         Tournament tournament = tournamentRepository.findById(id).orElse(null);
