@@ -3,6 +3,7 @@ package com.mesports.testproject.entities;
 import com.mesports.testproject.exceptions.ErrorMessages;
 import com.mesports.testproject.exceptions.TournamentException;
 import lombok.Data;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Participant {
             inverseJoinColumns = @JoinColumn(name = "participants_id", referencedColumnName = "id"))
     private List<Match> match;
 
-    @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "participants",cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private List<Tournament> tournaments;
 
     public Participant() {
@@ -56,6 +57,9 @@ public class Participant {
 
     @Override
     public String toString() {
-        return "Participant(id=" + id + ", name=" + participantName + ", tournaments=[" + tournaments.size() + "]) ";
+        int size = 0;
+        //Hibernate.initialize(p.getTournaments());
+        return "Participant(id=" + id + ", name=" + participantName + ", tournaments=[" + "]) " +
+                ", matches=[" + match.size() + "])  ";
     }
 }

@@ -2,27 +2,21 @@ package com.mesports.testproject.controllers;
 
 import com.mesports.testproject.dto.ParticipantDto;
 import com.mesports.testproject.dto.TournamentDto;
-import com.mesports.testproject.entities.Participant;
-import com.mesports.testproject.entities.Tournament;
 import com.mesports.testproject.models.AddParticipantsToTournamentModel;
 import com.mesports.testproject.models.CreateTournamentModel;
-import com.mesports.testproject.models.ParticipantsModelForTournament;
 import com.mesports.testproject.models.TournamentModel;
 import com.mesports.testproject.services.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @RestController
-//@CrossOrigin
 @RequestMapping("/tournament")
 public class TournamentController {
 
@@ -49,7 +43,7 @@ public class TournamentController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PutMapping(path = "/add-participants/{id}")
+    @PutMapping(path = "/{id}/add-participants")
     public ResponseEntity addParticipants(@PathVariable long id,
                                           @RequestBody AddParticipantsToTournamentModel[] participants) {
         Set<ParticipantDto> participantsDto = new HashSet<>();
@@ -60,12 +54,18 @@ public class TournamentController {
         return ResponseEntity.ok(modelMapper.map(tournamentDto, TournamentModel.class));
     }
 
-    @DeleteMapping(path = "/remove-participants/{id}")
+    @DeleteMapping(path = "/{id}/remove-participants")
     public ResponseEntity removeParticipants(@PathVariable long id,
                                           @RequestBody AddParticipantsToTournamentModel participants) {
         ParticipantDto participantsDto = tournamentService.getParticipantById(participants.getId());
         TournamentDto tournamentDto = tournamentService.deleteParticipants(id, participantsDto);
         return ResponseEntity.ok(modelMapper.map(tournamentDto, TournamentModel.class));
+    }
+
+    @PostMapping(path = "/{id}/start")
+    public ResponseEntity startTournament(@PathVariable long id) {
+        tournamentService.startTournament(id);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

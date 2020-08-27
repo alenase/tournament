@@ -22,7 +22,7 @@ public class Match {
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
-    @ManyToMany(mappedBy = "match", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "match", fetch = FetchType.EAGER)
     private List<Participant> participants;
 
     @Column(name = "start_time1")
@@ -61,12 +61,12 @@ public class Match {
     @Override
     public String toString() {
         Date dateStart = null;
-        if (!startTime.equals(null)) {
+        if (startTime != null) {
             dateStart = startTime;
         }
 
         Date dateFinish = null;
-        if (!finishTime.equals(null)) {
+        if (finishTime != null) {
             dateFinish = finishTime;
         }
         return "Match(id=" + id + ", startTime=" + dateStart + ", finishTime=" +

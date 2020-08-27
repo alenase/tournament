@@ -2,16 +2,20 @@ package com.mesports.testproject.services;
 
 import com.mesports.testproject.dto.ParticipantDto;
 import com.mesports.testproject.dto.TournamentDto;
+import com.mesports.testproject.entities.Match;
 import com.mesports.testproject.entities.Participant;
 import com.mesports.testproject.entities.Tournament;
 import com.mesports.testproject.exceptions.ErrorMessages;
 import com.mesports.testproject.exceptions.TournamentException;
+import com.mesports.testproject.repository.MatchRepository;
 import com.mesports.testproject.repository.ParticipantRepository;
 import com.mesports.testproject.repository.TournamentRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -20,14 +24,16 @@ public class TournamentServiceImpl implements TournamentService {
 
     private TournamentRepository tournamentRepository;
     private ParticipantRepository participantRepository;
+    private MatchRepository matchRepository;
     private ModelMapper modelMapper;
 
     @Autowired
     public TournamentServiceImpl(ModelMapper modelMapper, TournamentRepository tournamentRepository,
-                                 ParticipantRepository participantRepository) {
+                                 ParticipantRepository participantRepository, MatchRepository matchRepository) {
         this.modelMapper = modelMapper;
         this.tournamentRepository = tournamentRepository;
         this.participantRepository = participantRepository;
+        this.matchRepository = matchRepository;
     }
 
     public TournamentDto getTournamentById(long id) {
@@ -62,7 +68,8 @@ public class TournamentServiceImpl implements TournamentService {
                     break;
                 }
             }
-            if (!ifContains) {
+            if (!ifContains && tournament.getParticipants().size() < tournament.getMaxParticipants()) {
+                System.out.println(tournament.getParticipants().size() + " " + tournament.getMaxParticipants());
                 Participant participantEntity = modelMapper.map(p, Participant.class);
 
                 tournament.setParticipants(participantEntity);
@@ -80,6 +87,29 @@ public class TournamentServiceImpl implements TournamentService {
         tournament.getParticipants().remove(participantEntity);
         Tournament result = tournamentRepository.save(tournament);
         return modelMapper.map(result, TournamentDto.class);
+    }
+
+    public TournamentDto startTournament(long id) {
+        Tournament tournament = tournamentRepository.findTournamentById(id);
+        List<Participant> participants = new ArrayList<>();
+
+        for (Participant p : tournament.getParticipants()) {
+            participants.add(p);
+        }
+
+        if (tournament.getMatches().size() < 0) {
+            int k = 0;
+            for (int i = 0; i < tournament.getMaxParticipants() / 2; i++) {
+                Match match = new Match();
+                match.setParticipants(participants.get(k++));
+                match.setParticipants(participants.get(k++));
+                match.setTournament(tournament);
+                tournament.setMatches(match);
+                matchRepository.save(match);
+            }
+        }
+        tournament = tournamentRepository.save(tournament);
+        return modelMapper.map(tournament, TournamentDto.class);
     }
 
 
