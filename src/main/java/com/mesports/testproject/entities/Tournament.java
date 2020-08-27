@@ -31,10 +31,10 @@ public class Tournament {
     @Column(name = "match_quantity", nullable = false)
     private int matchQuantity;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tournament" , cascade = CascadeType.ALL)//, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "tournament", cascade = CascadeType.ALL)
     private List<Match> matches;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     @JoinTable(name = "participants_in_tournaments",
             joinColumns = @JoinColumn(name = "tournament_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "participants_id", referencedColumnName = "id"))
@@ -45,7 +45,9 @@ public class Tournament {
         participants = new HashSet<>();
     }
 
-    private void setMatchQuantity(){}
+    //match quantity should be calculated automatically as these are single-elimination matches
+    private void setMatchQuantity() {
+    }
 
     public void setMaxParticipants(int maxParticipants) {
         if (maxParticipants % 8 != 0) {
@@ -65,7 +67,16 @@ public class Tournament {
     public void setParticipants(Participant participant) {
         for (Participant p : participants) {
             if (p.equals(participant)) {
-                throw new TournamentException(ErrorMessages.NOT_ALLOWED_QUANTITY);
+                throw new TournamentException(ErrorMessages.PARTICIPANT_IS_PRESENT);
+            }
+        }
+        participants.add(participant);
+    }
+
+    public void addParticipants(Participant participant) {
+        for (Participant p : participants) {
+            if (p.equals(participant)) {
+                return;
             }
         }
         participants.add(participant);
@@ -85,7 +96,6 @@ public class Tournament {
         return "Tournament(id=" + id + ", name=" + name + ", maxParticipants=" + maxParticipants
                 + ", matchQuantity=" + matchQuantity + ", matches=[" + matches.size()
                 + "], participants=[" + participants.size() + "])";
-
     }
 
 }

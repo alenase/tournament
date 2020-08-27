@@ -1,11 +1,12 @@
 package com.mesports.testproject.controllers;
 
+import com.mesports.testproject.dto.MatchDto;
 import com.mesports.testproject.dto.ParticipantDto;
 import com.mesports.testproject.dto.TournamentDto;
-import com.mesports.testproject.models.AddParticipantsToTournamentModel;
-import com.mesports.testproject.models.CreateTournamentModel;
-import com.mesports.testproject.models.TournamentModel;
+import com.mesports.testproject.exceptions.TournamentException;
+import com.mesports.testproject.models.*;
 import com.mesports.testproject.services.*;
+import org.modelmapper.MappingException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,7 +33,6 @@ public class TournamentController {
 
     @GetMapping(path = "/{id}")
     public ResponseEntity getTournament(@PathVariable long id) {
-        System.out.println(id);
         TournamentDto tournament = tournamentService.getTournamentById(id);
         return ResponseEntity.ok(modelMapper.map(tournament, TournamentModel.class));
     }
@@ -47,7 +48,7 @@ public class TournamentController {
     public ResponseEntity addParticipants(@PathVariable long id,
                                           @RequestBody AddParticipantsToTournamentModel[] participants) {
         Set<ParticipantDto> participantsDto = new HashSet<>();
-        for(AddParticipantsToTournamentModel p : participants){
+        for (AddParticipantsToTournamentModel p : participants) {
             participantsDto.add(tournamentService.getParticipantById(p.getId()));
         }
         TournamentDto tournamentDto = tournamentService.addParticipants(id, participantsDto);
@@ -56,7 +57,7 @@ public class TournamentController {
 
     @DeleteMapping(path = "/{id}/remove-participants")
     public ResponseEntity removeParticipants(@PathVariable long id,
-                                          @RequestBody AddParticipantsToTournamentModel participants) {
+                                             @RequestBody AddParticipantsToTournamentModel participants) {
         ParticipantDto participantsDto = tournamentService.getParticipantById(participants.getId());
         TournamentDto tournamentDto = tournamentService.deleteParticipants(id, participantsDto);
         return ResponseEntity.ok(modelMapper.map(tournamentDto, TournamentModel.class));
@@ -66,6 +67,19 @@ public class TournamentController {
     public ResponseEntity startTournament(@PathVariable long id) {
         tournamentService.startTournament(id);
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @PostMapping(path = "/{id}/create-match")
+    public ResponseEntity createMatch(@PathVariable int id,
+                                      @RequestBody AddMatch addMatch) {
+        MatchDto matchDto = new MatchDto();
+        matchDto.setFinishTime(addMatch.getFinishTime());
+        matchDto.setStartTime(addMatch.getStartTime());
+        matchDto.setParticipant1Score(addMatch.getParticipant1Score());
+        matchDto.setParticipant2Score(addMatch.getParticipant2Score());
+        TournamentDto tournamentDto = tournamentService.createMatch(id, matchDto, addMatch.getParticipantsId());
+        return ResponseEntity.ok(modelMapper.map(tournamentDto, TournamentModel.class));
     }
 
 }

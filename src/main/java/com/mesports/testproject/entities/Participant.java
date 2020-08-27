@@ -20,16 +20,16 @@ public class Participant {
     @GeneratedValue(strategy = IDENTITY)
     private int id;
 
-    @Column(nullable = false, name="participant_name")
+    @Column(nullable = false, name = "participant_name")
     private String participantName;
 
     @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "participants_in_matches",
-            joinColumns = @JoinColumn(name = "match_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "participants_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "participants1_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "match_id", referencedColumnName = "id"))
     private List<Match> match;
 
-    @ManyToMany(mappedBy = "participants",cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "participants", fetch = FetchType.LAZY)
     private List<Tournament> tournaments;
 
     public Participant() {
@@ -57,9 +57,11 @@ public class Participant {
 
     @Override
     public String toString() {
-        int size = 0;
-        //Hibernate.initialize(p.getTournaments());
+        String matchString = "";
+        for (Match m : match) {
+            matchString = +m.getId() + ", ";
+        }
         return "Participant(id=" + id + ", name=" + participantName + ", tournaments=[" + "]) " +
-                ", matches=[" + match.size() + "])  ";
+                ", matches=[" + matchString + "])  ";
     }
 }

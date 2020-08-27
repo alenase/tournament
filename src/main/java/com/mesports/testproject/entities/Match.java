@@ -5,10 +5,8 @@ import com.mesports.testproject.exceptions.TournamentException;
 import lombok.Data;
 
 import javax.persistence.*;
-
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import static javax.persistence.GenerationType.IDENTITY;
@@ -41,10 +39,9 @@ public class Match {
     @JoinColumn(name = "tournament_id")
     private Tournament tournament;
 
-    public Match(){
+    public Match() {
         participants = new ArrayList<>();
     }
-
 
     public void setParticipants(Participant participant) {
         for (Participant p : participants) {
@@ -64,16 +61,15 @@ public class Match {
         if (startTime != null) {
             dateStart = startTime;
         }
-
         Date dateFinish = null;
         if (finishTime != null) {
             dateFinish = finishTime;
         }
-        return "Match(id=" + id + ", startTime=" + dateStart + ", finishTime=" +
-                dateFinish + ", participant1Score=" + participant1Score
+        return "Match(id=" + id + ", startTime=" + dateStart + ", finishTime=" + dateFinish +
+                ", participantsList=" + participants
+                + ", participant1Score=" + participant1Score
                 + ", participant2Score=" + participant2Score +
                 ", Tournament: " + tournament.getName() + ", id=" + tournament.getId();
     }
-
 
 }

@@ -1,6 +1,5 @@
 package com.mesports.testproject.dto;
 
-import com.mesports.testproject.entities.Match;
 import lombok.Data;
 
 import java.util.List;

@@ -1,5 +1,6 @@
 package com.mesports.testproject.services;
 
+import com.mesports.testproject.dto.MatchDto;
 import com.mesports.testproject.dto.ParticipantDto;
 import com.mesports.testproject.dto.TournamentDto;
 import com.mesports.testproject.entities.Match;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -46,6 +46,11 @@ public class TournamentServiceImpl implements TournamentService {
         return modelMapper.map(participant, ParticipantDto.class);
     }
 
+    public MatchDto getMatchById(int id) {
+        Match match = matchRepository.getMatchById(id);
+        return modelMapper.map(match, MatchDto.class);
+    }
+
     public TournamentDto createTournament(TournamentDto tournamentDto) {
         Tournament tournamentEntity = modelMapper.map(tournamentDto, Tournament.class);
         Tournament result = tournamentRepository.save(tournamentEntity);
@@ -69,7 +74,6 @@ public class TournamentServiceImpl implements TournamentService {
                 }
             }
             if (!ifContains && tournament.getParticipants().size() < tournament.getMaxParticipants()) {
-                System.out.println(tournament.getParticipants().size() + " " + tournament.getMaxParticipants());
                 Participant participantEntity = modelMapper.map(p, Participant.class);
 
                 tournament.setParticipants(participantEntity);
@@ -97,25 +101,51 @@ public class TournamentServiceImpl implements TournamentService {
             participants.add(p);
         }
 
-        if (tournament.getMatches().size() < 0) {
+        if (tournament.getMatches().size() <= 0) {
             int k = 0;
-            for (int i = 0; i < tournament.getMaxParticipants() / 2; i++) {
+            System.out.println("Critical digit:" + tournament.getParticipants().size());
+            for (int i = 0; i < tournament.getParticipants().size() / 2; i++) {
+
                 Match match = new Match();
-                match.setParticipants(participants.get(k++));
-                match.setParticipants(participants.get(k++));
                 match.setTournament(tournament);
                 tournament.setMatches(match);
-                matchRepository.save(match);
+                match = matchRepository.save(match);
+
+                match.setParticipants(participants.get(k));
+
+                participants.get(k).setMatch(match);
+                System.out.println(k + " " + participants.get(k));
+                ++k;
+
+                match.setParticipants(participants.get(k));
+
+                participants.get(k).setMatch(match);
+                System.out.println(k + " " + participants.get(k));
+                ++k;
             }
         }
+
         tournament = tournamentRepository.save(tournament);
         return modelMapper.map(tournament, TournamentDto.class);
     }
 
-
-    public Tournament saveTournament(Tournament tournament) {
-        Tournament savedTournament = tournamentRepository.save(tournament);
-        return savedTournament;
+    public TournamentDto createMatch(int id, MatchDto matchDto, List<Integer> listId) {
+        Tournament tournament = tournamentRepository.findTournamentById(id);
+        Match match = modelMapper.map(matchDto, Match.class);
+        Participant p1 = participantRepository.getParticipantById(listId.get(0));
+        Participant p2 = participantRepository.getParticipantById(listId.get(1));
+        try {
+            tournament.addParticipants(p1);
+            tournament.addParticipants(p2);
+        } finally {
+            tournament.setMatches(match);
+            match.setParticipants(p1);
+            match.setParticipants(p2);
+            match.setTournament(tournament);
+            matchRepository.save(match);
+            tournamentRepository.save(tournament);
+        }
+        return modelMapper.map(tournament, TournamentDto.class);
     }
 
 

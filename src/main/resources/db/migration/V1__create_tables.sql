@@ -62,10 +62,10 @@ DROP TABLE IF EXISTS `participants_in_matches`;
 CREATE TABLE `participants_in_matches`
 (
     `match_id`   bigint(20) NOT NULL,
-    `participants_id` bigint(20) NOT NULL,
+    `participants1_id` bigint(20) NOT NULL,
     KEY `FK_match_participants` (`match_id`),
-    KEY `FK_participants_in_match` (`participants_id`),
-    CONSTRAINT `FK_participants_in_match` FOREIGN KEY (`participants_id`) REFERENCES `participants` (`id`),
-    CONSTRAINT `FK_match_participants` FOREIGN KEY (`match_id`) REFERENCES `tournament` (`id`)
+    KEY `FK_participants_in_match` (`participants1_id`),
+    CONSTRAINT `FK_participants_in_match` FOREIGN KEY (`participants1_id`) REFERENCES `participants` (`id`),
+    CONSTRAINT `FK_match_participants` FOREIGN KEY (`match_id`) REFERENCES `matches` (`id`)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = latin1;
