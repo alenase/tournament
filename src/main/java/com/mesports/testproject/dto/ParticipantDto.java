@@ -11,5 +11,5 @@ public class ParticipantDto {
     private int id;
     private String name;
     private List<MatchDto> match;
-    private List<TournamentDto> tournaments;
+    //private List<TournamentDto> tournaments;
 }

@@ -27,7 +27,7 @@ public class ParticipantController {
         this.modelMapper = modelMapper;
     }
 
-    @PutMapping
+    @PostMapping
     public ResponseEntity createParticipant(@RequestBody ParticipantsModelForTournament participantsModelForTournament) {
         ParticipantDto participant = modelMapper.map(participantsModelForTournament, ParticipantDto.class);
         tournamentService.createParticipant(participant);

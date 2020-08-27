@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.persistence.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -37,11 +38,11 @@ public class Tournament {
     @JoinTable(name = "participants_in_tournaments",
             joinColumns = @JoinColumn(name = "tournament_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "participants_id", referencedColumnName = "id"))
-    private List<Participant> participants;
+    private Set<Participant> participants;
 
     public Tournament() {
         matches = new ArrayList<>();
-        participants = new ArrayList<>();
+        participants = new HashSet<>();
     }
 
     private void setMatchQuantity(){}
