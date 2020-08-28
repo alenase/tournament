@@ -87,9 +87,13 @@ public class TournamentServiceImpl implements TournamentService {
 
     public TournamentDto deleteParticipants(long id, ParticipantDto participant) {
         Tournament tournament = tournamentRepository.findTournamentById(id);
-        Participant participantEntity = participantRepository.getParticipantById(participant.getId());
-        tournament.getParticipants().remove(participantEntity);
-        Tournament result = tournamentRepository.save(tournament);
+        Tournament result = new Tournament();
+        if(tournament.getMatches().size() == 0) {
+            Participant participantEntity = participantRepository.getParticipantById(participant.getId());
+            tournament.getParticipants().remove(participantEntity);
+            result = tournamentRepository.save(tournament);
+        }
+        else throw new TournamentException(ErrorMessages.TOURNAMENT_HAS_BEEN_STARTED);
         return modelMapper.map(result, TournamentDto.class);
     }
 

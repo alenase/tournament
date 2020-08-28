@@ -1,3 +1,102 @@
+Java Backend Engineer Test Task
+_____________________________________________________________________
+Preparation
+1. Create a MySQL Database and set user and password in pom.xml ( for FlyWay) and in application.proprties
+2. Migrate tables into Database using Maven Flyway plugin (for instance)
+
+_____________________________________________________________________
+Let's test the application. Here is the chronologic that can be sticked to:
+1. Create a tournament
+2. Create participants
+3. Assign participants to a tournament
+4. Start tournament
+5. Get tournament information
+6. Get match information
+
+1.Create a tournament
+POST
+http://localhost:8080/tournament
+
+{
+    "name": "Test tournament",
+    "maxParticipants": 8
+}
+
+2. Create participants (one participant can be created at a time)
+Create Participant
+POST
+http://localhost:8080/participants
+{
+    "name": "Participant1"
+}
+_____
+
+{
+    "name": "Participant2"
+}
+
+_____
+
+{
+    "name": "Participant3"
+}
+
+_____
+
+{
+    "name": "Participant4"
+}
+
+_____
+
+{
+    "name": "Participant5"
+}
+_____
+
+{
+    "name": "Participant6"
+}
+
+_____
+
+{
+    "name": "Participant7"
+}
+
+
+
+3. Assign participants to a tournament(id of tournament and participants are required for that! )
+Let's assume that tournament id - 2, participants' id - [2..8]
+Add participants to a tournament
+PUT
+http://localhost:8080/tournament/2/add-participants/
+[
+    {"id": 2},
+	{"id": 3},
+	{"id": 4},
+	{"id": 5},
+	{"id": 6},
+	{"id": 7},
+	{"id": 8}
+]
+
+4. Start tournament. Let's assume that tournament id - 2
+POST
+http://localhost:8080/tournament/2/start
+
+5. Get tournament information. Let's assume that tournament id - 2
+GET 
+http://localhost:8080/tournament/2
+
+6. Get match results. Let's assume that match id - 2
+GET
+http://localhost:8080/match/2
+
+
+_____________________________________________________________________
+Available controllers:
+
 Create Tournament
 POST
 http://localhost:8080/tournament
@@ -12,7 +111,40 @@ Get Tournament
 GET 
 http://localhost:8080/tournament/2
 
+
+
+Add participants to a tournament
+PUT
+http://localhost:8080/tournament/3/add-participants/
+[
+    {"id": 6},
+	{"id": 7},
+	{"id": 8}
+]
+
+
+Remove a participant from a tournament
+http://localhost:8080/tournament/3/remove-participant
+ {"id": 3}
+ 
+ 
+Add new match to the tournament
+POST
+http://localhost:8080/tournament/2/create-match
+{
+    "startTime": null,
+    "finishTime": null,
+    "participant1Score": 123,
+    "participant2Score": 123,
+    "participantsId": [5, 9]
+}
 _____________________________________________________________________
+
+
+
+
+
+
 
 Create Participant
 POST
@@ -21,6 +153,38 @@ http://localhost:8080/participants
     "name": "Participant12dsf34"
 }
 
+
+
+
+
+
 Get Participant by id
 GET
 http://localhost:8080/participants/8
+
+
+
+
+
+
+
+
+
+_____________________________________________________________________
+Match
+Get match results
+GET
+http://localhost:8080/match/5
+Reply:
+{
+    "id": 5,
+    "startTime": null,
+    "finishTime": null,
+    "participant1Score": 0,
+    "participant2Score": 0,
+    "participants1": "Participant1234",
+    "participants2": "Participant123",
+    "result": "This match has not been played yet"
+}
+
+
